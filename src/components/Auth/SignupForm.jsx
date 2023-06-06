@@ -42,7 +42,7 @@ const SignupForm = () => {
 	const onSubmit = async (values, onSubmitProps) => {
 		try {
 			setLoading(true);
-			const { data, status } = await register(values.name, values.email, values.newPassword)
+			const { data, status } = await register(values.name, values.newEmail, values.newPassword)
 			if (status !== 200) {
 				toast({
 					title: "Error occured",
