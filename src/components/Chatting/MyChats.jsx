@@ -97,7 +97,7 @@ const MyChats = ({ fetchAgain }) => {
 			>
 				{chats ? (
 					<Stack overflowY="scroll">
-						{chats.map((chat) => (
+						{chats && chats.map((chat) => (
 							<Box
 								onClick={() => setSelectedChat(chat)}
 								cursor="pointer"
