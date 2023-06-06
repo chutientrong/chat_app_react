@@ -100,8 +100,12 @@ const SideDrawer = () => {
 		try {
 			// fetch api get user 
 			const { data } = await accessUser(user.token, userId)
+
 			if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+			console.log("setSelectedChat",data)
 			setSelectedChat(data);
+			onClose();
+			navigate("/chats");
 		} catch (error) {
 			console.log(error);
 		}
@@ -244,8 +248,7 @@ const SideDrawer = () => {
 										user={user}
 										handleFunction={() => {
 											accessChat(user._id);
-											onClose();
-											window.location.reload();
+											
 										}}
 									/>
 								);

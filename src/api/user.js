@@ -59,7 +59,7 @@ export const searchUser = async (token, search) => {
 export const accessUser = async (token, userId) => {
 	try {
 		let res = await axios.post(
-			`${apiUrl}/api/user`,
+			`${apiUrl}/api/chat`,
 			{ userId },
 			{
 				headers: {
