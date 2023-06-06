@@ -1,0 +1,1 @@
+export const apiUrl = process.env.PUBLIC_URL?process.env.PUBLIC_URL:"https://chat-app-node-t1xa.onrender.com" 

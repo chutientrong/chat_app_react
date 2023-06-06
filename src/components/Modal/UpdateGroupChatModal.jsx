@@ -17,10 +17,12 @@ import {
 } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { ViewIcon } from "@chakra-ui/icons";
-import { ChatState } from "../../../context/ChatProvider";
-import UserBadgeItem from "../../userAvatar/UserBadgeItem";
+import { ChatState } from "../../context/ChatProvider";
+import UserBadgeItem from "../User/UserBadgeItem";
 import axios from "axios";
-import UserListItem from "../../userAvatar/UserListItem";
+import UserListItem from "../User/UserListItem";
+import { addUserToGroup, renameGroup, removeUserInGroup } from "../../api/chat";
+import { searchUser } from "../../api/user";
 
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 	/* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS -------------------------------- */
@@ -66,22 +68,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 		try {
 			setLoading(true);
 
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
-
 			// fetch api add user to group
-			const { data } = await axios.put(
-				`/api/chat/group/add`,
-				{
-					chatId: selectedChat._id,
-					userId: user1._id,
-				},
-				config
-			);
+			const { data } = await addUserToGroup(user.token, selectedChat._id, user1._id);
 
 			setSelectedChat(data);
 			setFetchAgain(!fetchAgain);
@@ -107,19 +95,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 		try {
 			setRenameLoading(true);
 
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
-
 			// fetch api rename group
-			const { data } = await axios.put(
-				"/api/chat/group/rename",
-				{ chatId: selectedChat._id, chatName: groupChatName },
-				config
-			);
+			const { data } = await renameGroup(user.token, selectedChat._id, groupChatName);
 			setSelectedChat(data);
 			setFetchAgain(!fetchAgain);
 			setRenameLoading(false);
@@ -147,14 +124,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 		try {
 			setLoading(true);
 
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
 			// fetch api search user
-			const { data } = await axios.get(`/api/user?search=${search}`, config);
+			const { data } = await searchUser(user.token, search);
 
 			setLoading(false);
 			setSearchResult(data);
@@ -196,14 +167,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 			};
 
 			// fetch api remove user
-			const { data } = await axios.put(
-				`/api/chat/group/remove`,
-				{
-					chatId: selectedChat._id,
-					userId: user1._id,
-				},
-				config
-			);
+			const { data } = await removeUserInGroup(user.token, selectedChat._id, user1._id);
 
 			user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
 			setFetchAgain(!fetchAgain);
@@ -227,21 +191,21 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 	/* -------------------------------- UI -------------------------------- */
 	return (
 		<>
-			<IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+			<IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
 			<Modal isOpen={isOpen} onClose={onClose} isCentered>
 				<ModalOverlay />
 				<ModalContent>
 					<ModalHeader
 						fontSize="25px"
 						fontFamily="Poppins"
-						d="flex"
+						display="flex"
 						justifyContent="center"
 					>
 						{selectedChat.chatName}
 					</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody>
-						<Box w="100%" d="flex" flexWrap="wrap" pb={3}>
+						<Box w="100%" display="flex" flexWrap="wrap" pb={3}>
 							{selectedChat.users.map((u, i) => (
 								<UserBadgeItem
 									key={i}
@@ -250,7 +214,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 								/>
 							))}
 						</Box>
-						<FormControl d="flex">
+						<FormControl display="flex">
 							<Input
 								placeholder="Chat Name"
 								mb={3}

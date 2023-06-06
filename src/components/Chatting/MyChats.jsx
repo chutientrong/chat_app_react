@@ -7,7 +7,8 @@ import { getSender } from "../../config/ChatLogic";
 import { Button } from "@chakra-ui/button";
 import ChatLoading from "./ChatLoading";
 import { ChatState } from "../../context/ChatProvider";
-import GroupChatModal from "./Modal/GroupChatModal";
+import GroupChatModal from "../Modal/GroupChatModal";
+import { getAllChats } from "../../api/chat";
 
 const MyChats = ({ fetchAgain }) => {
 	/* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS -------------------------------- */
@@ -22,15 +23,8 @@ const MyChats = ({ fetchAgain }) => {
 	// Function get chat
 	const fetchChats = async () => {
 		try {
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
-
 			// fetch api get all chat
-			const { data } = await axios.get("/api/chat", config);
+			const { data } = await getAllChats(user.token);
 
 			setChats(data);
 		} catch (error) {
@@ -56,7 +50,7 @@ const MyChats = ({ fetchAgain }) => {
 
 	return (
 		<Box
-			d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+			display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
 			flexDir="column"
 			alignItems="center"
 			p={3}
@@ -71,15 +65,15 @@ const MyChats = ({ fetchAgain }) => {
 				px={3}
 				fontSize={{ base: "28px", md: "30px" }}
 				fontFamily="Poppins"
-				d="flex"
+				display="flex"
 				w="100%"
 				justifyContent="space-between"
 				alignItems="center"
 			>
-				My Chats
+				Chatting
 				<GroupChatModal>
 					<Button
-						d="flex"
+						display="flex"
 						bg="#657786"
 						_hover={{
 							background: "white",
@@ -93,7 +87,7 @@ const MyChats = ({ fetchAgain }) => {
 				</GroupChatModal>
 			</Box>
 			<Box
-				d="flex"
+				display="flex"
 				flexDir="column"
 				p={3}
 				bg="#657786"

@@ -21,12 +21,13 @@ import { Box, Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { ChatState } from "../../context/ChatProvider";
-import ProfileModal from "./Modal/ProfileModal";
-import { useHistory } from "react-router";
+import ProfileModal from "../Modal/ProfileModal";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import ChatLoading from "./ChatLoading";
-import UserListItem from "../userAvatar/UserListItem";
+import UserListItem from "../User/UserListItem";
 import { getSender } from "../../config/ChatLogic";
+import { accessUser, searchUser } from "../../api/user";
 
 const SideDrawer = () => {
 	/* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS -------------------------------- */
@@ -35,7 +36,7 @@ const SideDrawer = () => {
 	const [searchResult, setSearchResult] = useState([]);
 	const [loading, setLoading] = useState(false);
 
-	const history = useHistory();
+	const navigate = useNavigate();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const {
 		user,
@@ -47,9 +48,9 @@ const SideDrawer = () => {
 	} = ChatState();
 	const toast = useToast();
 
-/* -------------------------------- FUNCTIONS -------------------------------- */
+	/* -------------------------------- FUNCTIONS -------------------------------- */
 
-// Function handle logout
+	// Function handle logout
 	const logoutHandler = () => {
 		toast({
 			title: "Logged out successfully!",
@@ -59,10 +60,10 @@ const SideDrawer = () => {
 			position: "bottom",
 		});
 		localStorage.removeItem("userInfo");
-		history.push("/");
+		navigate("/");
 	};
 
-  // Function handle search user
+	// Function handle search user
 	const handleSearch = async () => {
 		if (!search) {
 			toast({
@@ -77,15 +78,9 @@ const SideDrawer = () => {
 
 		try {
 			setLoading(true);
-      // config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
 
-      // fetch api search
-			const { data } = await axios.get(`/api/user?search=${search}`, config);
+			// fetch api search
+			const { data } = await searchUser(user.token, search)
 			setLoading(false);
 			setSearchResult(data);
 		} catch (error) {
@@ -101,19 +96,11 @@ const SideDrawer = () => {
 		}
 	};
 
-  // Function handle access to chatting
+	// Function handle access to chatting
 	const accessChat = async (userId) => {
 		try {
-      // config header send token
-			const config = {
-				headers: {
-					"Content-type": "application/json",
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
-      
-      // fetch api get user 
-			const { data } = await axios.post(`/api/chat`, { userId }, config);
+			// fetch api get user 
+			const { data } = await accessUser(user.token, userId)
 			if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
 			setSelectedChat(data);
 		} catch (error) {
@@ -121,14 +108,14 @@ const SideDrawer = () => {
 		}
 	};
 
-  /* -------------------------------- UI -------------------------------- */
+	/* -------------------------------- UI -------------------------------- */
 	return (
 		<>
 			<Box
 				bg="primary"
 				color="white"
 				borderColor="#15202B"
-				d="flex"
+				display="flex"
 				justifyContent="space-between"
 				alignItems="center"
 				w="100%"
@@ -136,9 +123,9 @@ const SideDrawer = () => {
 				borderWidth="5px"
 			>
 				<Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-					<Button variant="ghost" onClick={onOpen}>
+					<Button colorScheme='teal' variant='outline' onClick={onOpen}>
 						<i className="fas fa-search"></i>
-						<Text d={{ base: "none", md: "flex" }} px={4}>
+						<Text display={{ base: "none", md: "flex" }} px={4}>
 							Search User
 						</Text>
 					</Button>
@@ -195,6 +182,8 @@ const SideDrawer = () => {
 						<MenuList bg="#657786">
 							<ProfileModal user={user}>
 								<MenuItem
+									color="white"
+									bg="#657786"
 									_hover={{
 										background: "white",
 										color: "teal.500",
@@ -206,6 +195,8 @@ const SideDrawer = () => {
 							<MenuDivider />
 							<MenuItem
 								onClick={logoutHandler}
+								color="white"
+								bg="#657786"
 								_hover={{
 									background: "white",
 									color: "teal.500",
@@ -226,7 +217,7 @@ const SideDrawer = () => {
 					</DrawerHeader>
 
 					<DrawerBody bg="#15202B" color="white">
-						<Box d="flex" pb={2}>
+						<Box display="flex" pb={2}>
 							<Input
 								placeholder="Search by name or email"
 								mr={2}

@@ -11,12 +11,13 @@ import {
 } from "@chakra-ui/react";
 import { ChatState } from "../../context/ChatProvider";
 import { getSender, getSenderFull } from "../../config/ChatLogic";
-import ProfileModal from "./Modal/ProfileModal";
-import UpdateGroupChatModal from "./Modal/UpdateGroupChatModal";
+import ProfileModal from "../Modal/ProfileModal";
+import UpdateGroupChatModal from "../Modal/UpdateGroupChatModal";
 import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
-import "./message.css";
+import { createMessage, getAllMessages } from "../../api/message";
+
 
 const ENDPOINT = "https://chat-app-node.adaptable.app/";
 var socket, seletedChatCompare;
@@ -43,18 +44,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 		try {
 			setLoading(true);
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
-
 			// fetch api get all messages by chat id
-			const { data } = await axios.get(
-				`/api/message/${selectedChat._id}`,
-				config
-			);
+			const { data } = await getAllMessages(user.token, selectedChat._id);
 
 			setMessages(data);
 			setLoading(false);
@@ -78,23 +69,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 			socket.emit("stop typing", selectedChat._id);
 			try {
 				setNewMessage("");
-				// config header send token
-				const config = {
-					headers: {
-						"Content-type": "application/json",
-						Authorization: `Bearer ${user.token}`,
-					},
-				};
 
 				// fetch api send message
-				const { data } = await axios.post(
-					"/api/message",
-					{
-						content: newMessage,
-						chatId: selectedChat._id,
-					},
-					config
-				);
+				const { data } = await createMessage(user.token, newMessage, selectedChat._id)
 
 				// emit new message to socket
 				socket.emit("new message", data);
@@ -185,12 +162,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						px={2}
 						w="100%"
 						fontFamily="Poppins"
-						d="flex"
+						display="flex"
 						justifyContent={{ base: "space-between" }}
 						alignItems="center"
 					>
 						<IconButton
-							d={{ base: "flex", md: "none" }}
+							display={{ base: "flex", md: "none" }}
 							icon={<ArrowBackIcon />}
 							onClick={() => setSelectedChat("")}
 						/>
@@ -211,7 +188,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 						)}
 					</Text>
 					<Box
-						d="flex"
+						display="flex"
 						flexDir="column"
 						justifyContent="flex-end"
 						p={3}
@@ -265,7 +242,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 					</Box>
 				</>
 			) : (
-				<Box d="flex" alignItems="center" justifyContent="center" h="100%">
+				<Box display="flex" alignItems="center" justifyContent="center" h="100%">
 					<Text fontSize="3xl" pb={3} fontFamily="Poppins">
 						Click on a user to start chatting
 					</Text>

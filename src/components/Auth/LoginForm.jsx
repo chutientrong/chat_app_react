@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useHistory } from "react-router-dom";
-import FormikControl from "../loginRegister/FormikControl";
+import { useNavigate } from "react-router-dom";
+import FormikControl from "../FormField/FormikControl";
 import { Button, Center, useToast } from "@chakra-ui/react";
 import axios from "axios";
+import { login } from "../../api/user";
 
 const LoginForm = () => {
   /* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS, VALIDATIONS -------------------------------- */
@@ -12,7 +13,7 @@ const LoginForm = () => {
   const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const toast = useToast();
 
   const savedData = {
@@ -27,13 +28,13 @@ const LoginForm = () => {
 
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email format!").required("Required"),
-		password: Yup.string()
-			.min(6, "Password must more than 6 characters!")
-			.required("Required"),
+    password: Yup.string()
+      .min(6, "Password must more than 6 characters!")
+      .required("Required"),
   });
 
-/* -------------------------------- FUNCTIONS -------------------------------- */
-// Function handle login user
+  /* -------------------------------- FUNCTIONS -------------------------------- */
+  // Function handle login user
   const onSubmit = async (values) => {
     try {
       setLoading(true);
@@ -45,11 +46,19 @@ const LoginForm = () => {
       };
 
       // fetc api login user
-      const { data } = await axios.post(
-        "/api/user/login",
-        { email: values.email, password: values.password },
-        config
-      );
+      const { data, status } = await login(values.email, values.password)
+      if (status !== 201) {
+        toast({
+          title: "Error occured",
+          description: data,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+      }
+
       toast({
         title: "Login successfull",
         status: "success",
@@ -59,7 +68,7 @@ const LoginForm = () => {
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-      history.go("/chats");
+      navigate("/chats");
     } catch (error) {
       toast({
         title: "Error occured",
@@ -73,7 +82,7 @@ const LoginForm = () => {
     }
   };
 
-/* -------------------------------- UI -------------------------------- */
+  /* -------------------------------- UI -------------------------------- */
   return (
     <>
       <Formik
@@ -85,7 +94,7 @@ const LoginForm = () => {
           return (
             <Form>
               <FormikControl
-                control="chakrainput"
+                control="inputField"
                 type="email"
                 name="email"
                 label="Email"
@@ -94,7 +103,7 @@ const LoginForm = () => {
               />
 
               <FormikControl
-                control="chakrapasswordinp"
+                control="passwordField"
                 name="password"
                 label="Password"
                 holder="Enter a password"

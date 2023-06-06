@@ -1,6 +1,6 @@
 import React from "react";
-import ChakraInput from "./ChakraInput";
-import ChakraPasswordInp from "./ChakraPasswordInp";
+import InputField from "./InputField";
+import PasswordField from "./PasswordField";
 
 function FormikControl(props) {
 	/* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS -------------------------------- */
@@ -9,10 +9,10 @@ function FormikControl(props) {
 
 	/* -------------------------------- UI -------------------------------- */
 	switch (control) {
-		case "chakrainput":
-			return <ChakraInput {...rest} />;
-		case "chakrapasswordinp":
-			return <ChakraPasswordInp {...rest} />;
+		case "inputField":
+			return <InputField {...rest} />;
+		case "passwordField":
+			return <PasswordField {...rest} />;
 		default:
 			return null;
 	}

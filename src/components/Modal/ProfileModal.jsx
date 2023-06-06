@@ -20,7 +20,7 @@ const ProfileModal = ({ user, children }) => {
 	/* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS -------------------------------- */
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
-  
+
 	/* -------------------------------- UI -------------------------------- */
 	return (
 		<>
@@ -28,7 +28,7 @@ const ProfileModal = ({ user, children }) => {
 				<span onClick={onOpen}>{children}</span>
 			) : (
 				<IconButton
-					d={{ base: "flex" }}
+					display={{ base: "flex" }}
 					bg="#657786"
 					icon={<ViewIcon />}
 					onClick={onOpen}
@@ -42,7 +42,7 @@ const ProfileModal = ({ user, children }) => {
 						color="white"
 						fontSize="40px"
 						fontFamily="Poppins"
-						d="flex"
+						display="flex"
 						justifyContent="center"
 					>
 						{user.name}
@@ -51,7 +51,7 @@ const ProfileModal = ({ user, children }) => {
 					<ModalBody
 						bg="#15202B"
 						color="white"
-						d="flex"
+						display="flex"
 						flexDir="column"
 						justifyContent="space-between"
 						alignItems="center"

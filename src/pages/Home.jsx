@@ -9,21 +9,21 @@ import {
 	TabPanel,
 	TabPanels,
 } from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
-import LoginForm from "../components/authentication/LoginForm";
-import SignupForm from "../components/authentication/SignupForm";
+import { useNavigate } from "react-router-dom";
+import LoginForm from "../components/Auth/LoginForm";
+import SignupForm from "../components/Auth/SignupForm";
 
 const Home = () => {
 	/* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS -------------------------------- */
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	/* -------------------------------- USEEFFECTS -------------------------------- */
 	useEffect(() => {
 		const user = JSON.parse(localStorage.getItem("userInfo"));
 		if (user) {
-			history.push("/chats");
+			navigate("/chats");
 		}
-	}, [history]);
+	}, [navigate]);
 
 	/* -------------------------------- UI -------------------------------- */
 	return (

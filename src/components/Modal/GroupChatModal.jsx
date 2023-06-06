@@ -14,10 +14,12 @@ import {
 import { Input } from "@chakra-ui/input";
 import { FormControl } from "@chakra-ui/form-control";
 import { Button } from "@chakra-ui/button";
-import { ChatState } from "../../../context/ChatProvider";
+import { ChatState } from "../../context/ChatProvider";
+import UserListItem from "../User/UserListItem";
+import UserBadgeItem from "../User/UserBadgeItem";
 import axios from "axios";
-import UserListItem from "../../userAvatar/UserListItem";
-import UserBadgeItem from "../../userAvatar/UserBadgeItem";
+import { searchUser } from "../../api/user";
+import { createGroup } from "../../api/chat";
 
 const GroupChatModal = ({ children }) => {
 	/* -------------------------------- STATES, PROPS, CONTEXTS, HOOKS -------------------------------- */
@@ -44,15 +46,8 @@ const GroupChatModal = ({ children }) => {
 		try {
 			setLoading(true);
 
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
-
 			// fetch api search
-			const { data } = await axios.get(`/api/user?search=${search}`, config);
+			const { data } = await searchUser(user.token, search)
 			setLoading(false);
 			setSearchResult(data);
 		} catch (error) {
@@ -82,23 +77,9 @@ const GroupChatModal = ({ children }) => {
 		}
 
 		try {
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
 
 			// fetch api create group chat
-			const { data } = await axios.post(
-				"/api/chat/group",
-				{
-					name: groupChatName,
-					users: JSON.stringify(selectedUsers.map((u) => u._id)),
-				},
-				config
-			);
-
+			const { data } = await createGroup(user.token, groupChatName, selectedUsers);
 			setChats([data, ...chats]);
 			onClose();
 
@@ -152,13 +133,13 @@ const GroupChatModal = ({ children }) => {
 					<ModalHeader
 						fontSize="35px"
 						fontFamily="Poppins"
-						d="flex"
+						display="flex"
 						justifyContent="center"
 					>
 						Create Group Chat
 					</ModalHeader>
 					<ModalCloseButton />
-					<ModalBody d="flex" flexDir="column" alignItems="center">
+					<ModalBody display="flex" flexDir="column" alignItems="center">
 						<FormControl>
 							<Input
 								placeholder="Group Name"
@@ -173,7 +154,7 @@ const GroupChatModal = ({ children }) => {
 								onChange={(e) => handleSearch(e.target.value)}
 							/>
 						</FormControl>
-						<Box w="100%" d="flex" flexWrap="wrap">
+						<Box w="100%" display="flex" flexWrap="wrap">
 							{selectedUsers.map((u, i) => (
 								<UserBadgeItem
 									key={i}
