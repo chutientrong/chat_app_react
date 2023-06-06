@@ -17,7 +17,6 @@ import { Button } from "@chakra-ui/button";
 import { ChatState } from "../../context/ChatProvider";
 import UserListItem from "../User/UserListItem";
 import UserBadgeItem from "../User/UserBadgeItem";
-import axios from "axios";
 import { searchUser } from "../../api/user";
 import { createGroup } from "../../api/chat";
 

@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import FormikControl from "../FormField/FormikControl";
 import { Button, Center, useToast } from "@chakra-ui/react";
-import axios from "axios";
+
 import { login } from "../../api/user";
 
 const LoginForm = () => {
@@ -38,12 +38,6 @@ const LoginForm = () => {
   const onSubmit = async (values) => {
     try {
       setLoading(true);
-      // config header send token
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
 
       // fetc api login user
       const { data, status } = await login(values.email, values.password)

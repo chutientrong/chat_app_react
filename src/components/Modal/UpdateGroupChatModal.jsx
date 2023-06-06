@@ -19,7 +19,6 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import { ViewIcon } from "@chakra-ui/icons";
 import { ChatState } from "../../context/ChatProvider";
 import UserBadgeItem from "../User/UserBadgeItem";
-import axios from "axios";
 import UserListItem from "../User/UserListItem";
 import { addUserToGroup, renameGroup, removeUserInGroup } from "../../api/chat";
 import { searchUser } from "../../api/user";
@@ -158,13 +157,6 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
 		try {
 			setLoading(true);
-
-			// config header send token
-			const config = {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			};
 
 			// fetch api remove user
 			const { data } = await removeUserInGroup(user.token, selectedChat._id, user1._id);

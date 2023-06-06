@@ -13,7 +13,6 @@ import { ChatState } from "../../context/ChatProvider";
 import { getSender, getSenderFull } from "../../config/ChatLogic";
 import ProfileModal from "../Modal/ProfileModal";
 import UpdateGroupChatModal from "../Modal/UpdateGroupChatModal";
-import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import { createMessage, getAllMessages } from "../../api/message";
