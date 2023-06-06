@@ -51,18 +51,21 @@ const LoginForm = () => {
           position: "bottom",
         });
         setLoading(false);
+        return;
+      }else{
+
+        toast({
+          title: "Login successfull",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        setLoading(false);
+        navigate("/chats");
       }
 
-      toast({
-        title: "Login successfull",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
-      navigate("/chats");
     } catch (error) {
       toast({
         title: "Error occured",

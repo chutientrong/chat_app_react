@@ -53,18 +53,21 @@ const SignupForm = () => {
 					position: "bottom",
 				});
 				setLoading(false);
+				return;
+			}else{
+
+				toast({
+					title: "Registration successfull",
+					status: "success",
+					duration: 5000,
+					isClosable: true,
+					position: "bottom",
+				});
+	
+				localStorage.setItem("userInfo", JSON.stringify(data));
+	
+				navigate("/chats");
 			}
-			toast({
-				title: "Registration successfull",
-				status: "success",
-				duration: 5000,
-				isClosable: true,
-				position: "bottom",
-			});
-
-			localStorage.setItem("userInfo", JSON.stringify(data));
-
-			navigate("/chats");
 		} catch (error) {
 			toast({
 				title: "Error occured",
