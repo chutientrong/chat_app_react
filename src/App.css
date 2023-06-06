@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap");
+
+.boxContainer {
+  height: max-content;
+  display: flex;
+  background-color: #15202b;
+  background-size: cover;
+  background-position: center;
+}
+
+.demo-video {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+  background-color: #15202b;
+}
+
+.bgMatch {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.281);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
